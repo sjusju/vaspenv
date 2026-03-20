@@ -1,0 +1,33 @@
+[submodule "dependencies/hdf5"]
+	path = dependencies/hdf5
+	url = https://github.com/HDFGroup/hdf5.git
+[submodule "dependencies/wannier90"]
+	path = dependencies/wannier90
+	url = https://github.com/wannier-developers/wannier90.git
+[submodule "dependencies/libxc"]
+	path = dependencies/libxc
+	url = https://gitlab.com/libxc/libxc.git
+[submodule "dependencies/libbeef"]
+	path = dependencies/libbeef
+	url = https://github.com/vossjo/libbeef.git
+[submodule "dependencies/dftd4"]
+	path = dependencies/dftd4
+	url = https://github.com/dftd4/dftd4.git
+[submodule "dependencies/simple-dftd3"]
+	path = dependencies/simple-dftd3
+	url = https://github.com/dftd3/simple-dftd3.git
+[submodule "dependencies/elpa"]
+	path = dependencies/elpa
+	url = https://gitlab.mpcdf.mpg.de/elpa/elpa.git
+[submodule "dependencies/libmbd"]
+	path = dependencies/libmbd
+	url = https://github.com/libmbd/libmbd.git
+[submodule "dependencies/dl_mg_code_public"]
+	path = dependencies/dl_mg_code_public
+	url = https://bitbucket.org/dlmgteam/dl_mg_code_public.git
+[submodule "dependencies/pspfft"]
+	path = dependencies/pspfft
+	url = https://code.ornl.gov/reubendb/pspfft.git
+[submodule "dependencies/mctc-lib"]
+	path = dependencies/mctc-lib
+	url = https://github.com/grimme-lab/mctc-lib.git
