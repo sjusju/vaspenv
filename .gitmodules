@@ -28,3 +28,6 @@
 [submodule "dependencies/pspfft"]
 	path = dependencies/pspfft
 	url = https://code.ornl.gov/reubendb/pspfft.git
+[submodule "dependencies/mctc-lib"]
+	path = dependencies/mctc-lib
+	url = https://github.com/grimme-lab/mctc-lib.git
