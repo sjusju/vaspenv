@@ -6,10 +6,14 @@ FC= ifx
 MPICC= mpiicx
 MPICXX= mpiicpx
 MPIFC= mpiifx
+# Binary tools (required for link time optimization)
+AR=ar
+NM=nm
+RANLIB=ranlib
 # Common flags (Only put flags common to all libraries.)
-CFLAGS= -march=native -O2
-FCFLAGS= -march=native -O2
-LDFLAGS=
+CFLAGS= -march=native -O2 -g -Bsymbolic
+FCFLAGS= -march=native -O2 -g -Bsymbolic
+LDFLAGS= -Wl,-z,noexecstack -Wl,-Bsymbolic
 # BLAS
 CFLAGS_BLAS= -I"${MKLROOT}/include"
 FCFLAGS_BLAS= -I"${MKLROOT}/include"
@@ -34,6 +38,18 @@ LDFLAGS_FFTW= -L"${MKLROOT}/lib" -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -l
 VASP=vasp.6.6.0.tgz
 BASE=makefile.include.oneapi
 OPTIONALS=hdf5 wannier90 libxc libbeef dftd4 simple-dftd3 elpa libmbd scpc
+
+export CC
+export CXX
+export FC
+export CFLAGS
+export FCFLAGS
+export LDFLAGS
+export AR
+export NM
+export RANLIB
+
+export PATH :=${CURDIR}/build/tools:${PATH}
 
 all: vasp
 
@@ -200,6 +216,7 @@ build/install/lib/libelpa.a: build/elpa
 	cd build/elpa && ./autogen.sh
 	cd build/elpa && \
 	CC="${MPICC}" \
+	CXX="${MPICXX}" \
 	FC="${MPIFC}" \
 	CFLAGS="${CFLAGS} ${CFLAGS_BLAS} ${CFLAGS_LAPACK} ${CFLAGS_BLACS} ${CFLAGS_SCALAPACK}" \
 	FCFLAGS="${FCFLAGS} ${FFLAGS_BLAS} ${FFLAGS_LAPACK} ${FFLAGS_BLACS} ${FFLAGS_SCALAPACK}" \
@@ -252,6 +269,14 @@ build/%: dependencies/% ./build
 	mkdir -p build/include
 	mkdir -p build/lib
 	mkdir -p build/makefiles
-	echo "INCS += \"-I${CURDIR}/build/include\"\n" > build/makefiles/base.mk
+	mkdir -p build/tools
+	echo "\
+	INCS  += \"-I${CURDIR}/build/include\"\n\
+	FFLAGS+= ${FCFLAGS}\n\
+	LINK  += ${LDFLAGS}\n\
+	" > build/makefiles/base.mk
+	ln -s $$(which ${AR}) build/tools/ar
+	ln -s $$(which ${NM}) build/tools/nm
+	ln -s $$(which ${RANLIB}) build/tools/ranlib
 
 .PHONY: all clean vasp optionals hdf5 wannier90 libxc libbeef dftd4 simple-dftd3 elpa libmbd pspfft scpc
