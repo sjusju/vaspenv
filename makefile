@@ -166,9 +166,9 @@ build/install/lib/libbeef.a: build/libbeef
 	./configure
 	${MAKE} -C build/libbeef
 	${MAKE} -C build/libbeef install prefix="${CURDIR}/build/install"
-build/lib/libmctc-lib.a: build/install/lib/x86_64-linux-gnu/libmctc-lib.a
+build/lib/libmctc-lib.a: build/install/lib/libmctc-lib.a
 	cp $< $@
-build/install/lib/x86_64-linux-gnu/libmctc-lib.a: build/mctc-lib
+build/install/lib/libmctc-lib.a: build/mctc-lib
 	cd build/mctc-lib && \
 	CC="${CC}" \
 	FC="${FC}" \
@@ -177,12 +177,13 @@ build/install/lib/x86_64-linux-gnu/libmctc-lib.a: build/mctc-lib
 	LDFLAGS="${LDFLAGS} ${LDFLAGS_BLAS} ${LDFLAGS_LAPACK}" \
 	meson setup _build --prefix="${CURDIR}/build/install" \
 	--wrap-mode=forcefallback \
-	-Dopenmp=false
+	-Dopenmp=false \
+	-Dlibdir=lib
 	cd build/mctc-lib && meson compile -C _build
 	cd build/mctc-lib && meson install -C _build
-build/lib/libdftd4.a: build/install/lib/x86_64-linux-gnu/libdftd4.a
+build/lib/libdftd4.a: build/install/lib/libdftd4.a
 	cp $< $@
-build/install/lib/x86_64-linux-gnu/libdftd4.a: build/dftd4 build/lib/libmctc-lib.a
+build/install/lib/libdftd4.a: build/dftd4 build/lib/libmctc-lib.a
 	cd build/dftd4 && \
 	CC="${CC}" \
 	FC="${FC}" \
@@ -192,12 +193,13 @@ build/install/lib/x86_64-linux-gnu/libdftd4.a: build/dftd4 build/lib/libmctc-lib
 	meson setup _build --prefix="${CURDIR}/build/install" \
 	--wrap-mode=forcefallback \
 	-Dopenmp=false \
-	-Dlapack=custom
+	-Dlapack=custom \
+	-Dlibdir=lib
 	cd build/dftd4 && meson compile -C _build
 	cd build/dftd4 && meson install -C _build
-build/lib/libs-dftd3.a: build/install/lib/x86_64-linux-gnu/libs-dftd3.a
+build/lib/libs-dftd3.a: build/install/lib/libs-dftd3.a
 	cp $< $@
-build/install/lib/x86_64-linux-gnu/libs-dftd3.a: build/simple-dftd3 build/lib/libmctc-lib.a
+build/install/lib/libs-dftd3.a: build/simple-dftd3 build/lib/libmctc-lib.a
 	cd build/simple-dftd3 && \
 	CC="${CC}" \
 	FC="${FC}" \
@@ -207,7 +209,8 @@ build/install/lib/x86_64-linux-gnu/libs-dftd3.a: build/simple-dftd3 build/lib/li
 	meson setup _build --prefix="${CURDIR}/build/install" \
 	--wrap-mode=forcefallback \
 	-Dopenmp=false \
-	-Dblas=custom
+	-Dblas=custom \
+	-Dlibdir=lib
 	cd build/simple-dftd3 && meson compile -C _build
 	cd build/simple-dftd3 && meson install -C _build
 build/lib/libelpa.a: build/install/lib/libelpa.a
