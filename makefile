@@ -59,57 +59,57 @@ clean:
 vasp: optionals
 	cd build && tar -xf "../${VASP}"
 	cp "build/${VASP:.tgz=}/arch/${BASE}" "build/${VASP:.tgz=}/makefile.include"
-	echo "\ninclude ${CURDIR}/build/makefiles/*" >> "build/${VASP:.tgz=}/makefile.include"
+	printf "\ninclude ${CURDIR}/build/makefiles/*\n" >> "build/${VASP:.tgz=}/makefile.include"
 	cd "build/${VASP:.tgz=}" && ${MAKE} DEPS=1
 
 optionals: ${OPTIONALS}
 	find build/install/include -type f -exec mv {} build/include \;
 
 hdf5: build/lib/libhdf5_fortran.a build/lib/libhdf5_f90cstub.a build/lib/libhdf5.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DVASP_HDF5\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 wannier90: build/lib/libwannier.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DVASP2WANNIER90\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 libxc: build/lib/libxcf03.a build/lib/libxc.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DUSELIBXC\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 libbeef: build/lib/libbeef.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -Dlibbeef\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 dftd4: build/lib/libdftd4.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DDFTD4\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 simple-dftd3: build/lib/libs-dftd3.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DSDFTD3\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 elpa: build/lib/libelpa.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DELPA\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 libmbd: build/lib/libmbd.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DLIBMBD\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 scpc: build/lib/libdlmg.a build/lib/libpspfft.a
-	echo "\
+	printf "\
 	CPP_OPTIONS += -DSCPC\n\
 	LLIBS       += ${^:%=\"${CURDIR}/%\"}\n\
-	" > build/makefiles/$@.mk
+	\n" > build/makefiles/$@.mk
 
 build/lib/libhdf5_fortran.a: build/install/lib/libhdf5_fortran.a
 	cp $< $@
@@ -231,8 +231,8 @@ build/install/lib/libelpa.a: build/elpa
 build/lib/libmbd.a: build/install/lib/libmbd.a
 	cp $< $@
 build/install/lib/libmbd.a: build/libmbd
-	echo "add_library(LAPACK::LAPACK INTERFACE IMPORTED)" > build/libmbd/cmake/FindLAPACK.cmake
-	echo "set(LAPACK_FOUND TRUE)" >> build/libmbd/cmake/FindLAPACK.cmake
+	printf "add_library(LAPACK::LAPACK INTERFACE IMPORTED)\n" > build/libmbd/cmake/FindLAPACK.cmake
+	printf "set(LAPACK_FOUND TRUE)\n" >> build/libmbd/cmake/FindLAPACK.cmake
 	CC="${CC}" \
 	FC="${FC}" \
 	CFLAGS="${CFLAGS}" \
@@ -249,7 +249,7 @@ build/install/lib/libmbd.a: build/libmbd
 build/lib/libpspfft.a: build/install/lib/libpspfft.a
 	cp $< $@
 build/install/lib/libpspfft.a: build/pspfft
-	echo "" > build/pspfft/Config/Makefile_Config
+	printf "\n" > build/pspfft/Config/Makefile_Config
 	${MAKE} -C build/pspfft/Build \
 	"FORTRAN_COMPILE=${MPIFC} -c" \
 	"FORTRAN_OPTIMIZE=${FCFLAGS}" \
@@ -258,8 +258,8 @@ build/install/lib/libpspfft.a: build/pspfft
 build/lib/libdlmg.a: build/install/lib/libdlmg.a
 	cp $< $@
 build/install/lib/libdlmg.a: build/dl_mg_code_public
-	echo "FC=${MPIFC}" > build/dl_mg_code_public/platforms/vaspenv.inc
-	echo "FFLAGS=${FCFLAGS} -module \$$(OBJDIR) -I\$$(LIBDIR) -I\$$(OBJDIR) -DMPI" >> build/dl_mg_code_public/platforms/vaspenv.inc
+	printf "FC=${MPIFC}\n" > build/dl_mg_code_public/platforms/vaspenv.inc
+	printf "FFLAGS=${FCFLAGS} -module \$$(OBJDIR) -I\$$(LIBDIR) -I\$$(OBJDIR) -DMPI\n" >> build/dl_mg_code_public/platforms/vaspenv.inc
 	${MAKE} PLATFORM=vaspenv \
 	-C build/dl_mg_code_public
 	mkdir -p build/install/include
@@ -275,11 +275,11 @@ build/%: dependencies/% ./build
 	mkdir -p build/lib
 	mkdir -p build/makefiles
 	mkdir -p build/tools
-	echo "\
+	printf "\
 	INCS  += \"-I${CURDIR}/build/include\"\n\
 	FFLAGS+= ${FCFLAGS}\n\
 	LINK  += ${LDFLAGS}\n\
-	" > build/makefiles/base.mk
+	\n" > build/makefiles/base.mk
 	ln -s $$(which ${AR}) build/tools/ar
 	ln -s $$(which ${NM}) build/tools/nm
 	ln -s $$(which ${RANLIB}) build/tools/ranlib
