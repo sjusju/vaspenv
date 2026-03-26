@@ -128,7 +128,8 @@ build/install/lib/libhdf5_fortran.a build/install/lib/libhdf5_f90cstub.a build/i
 	-DCMAKE_BUILD_TYPE=Release \
 	-DHDF5_ENABLE_PARALLEL=ON \
 	-DBUILD_STATIC_LIBS=ON \
-	-DHDF5_BUILD_FORTRAN=ON
+	-DHDF5_BUILD_FORTRAN=ON \
+	-DCMAKE_INSTALL_LIBDIR=lib
 	cmake --build build/hdf5/build --config Release
 	cmake --install build/hdf5/build --prefix "${CURDIR}/build/install"
 build/lib/libwannier.a: build/install/lib/libwannier.a
@@ -241,7 +242,8 @@ build/install/lib/libmbd.a: build/libmbd
 	-B build/libmbd/build \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DENABLE_SCALAPACK_MPI=OFF \
-	-DBUILD_SHARED_LIBS=OFF
+	-DBUILD_SHARED_LIBS=OFF \
+	-DCMAKE_INSTALL_LIBDIR=lib
 	cmake --build build/libmbd/build
 	cmake --install build/libmbd/build --prefix "${CURDIR}/build/install"
 build/lib/libpspfft.a: build/install/lib/libpspfft.a
