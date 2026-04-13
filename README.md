@@ -3,11 +3,12 @@
 - Fortran compiler (At least fortran 2008)
 - C preprocessor
 - C++ compiler
+- MPI compiler wrappers for all three above. (Make sure they point to correct compilers)
 ## Libraries
 - BLAS
 - LAPACK
 - FFTW / oneAPI FFT
-## Build tools
+## Build tools (Using conda environment is recommended)
 - make
 - cmake
 - ninja
@@ -26,15 +27,13 @@
         - Common compiler/linker flags (`CFLAGS`, `FCFLAGS`, and `LDFLAGS`)  
         - Compiler/linker flags for each library (`CFLAGS_*`, `FCFLAGS_*`, and `LDFLAGS_*`)  
     - Base makefile.include template file (`BASE`)  
-1. `make` (use `make -j` for faster compile with running multiple jobs in parallel)
+1. `make` (use `make -j` for parallel build)
 1. Enjoy
 
-> Once you've compiled all the dependency VASP packages, you may patch the vasp source code however you want, if needed. Navigate into `vaspenv/build/vasp.<version number>/`, remove the binary files with `make veryclean`, patch the source code, and finally build VASP again with `make DEPS=1 -j` (no need to re-build all the other submodules!).
+> Once you've compiled all the dependency VASP packages, you may patch the vasp source code however you want, if needed. Navigate into `vaspenv/build/<vasp_tarball_name>`, remove the binary files with `make veryclean`, patch the source code, and finally build VASP again with `make DEPS=1 -j` (no need to re-build all the other submodules!).
 
 # Issues
-- MPI wrappers may not be installed as the default `MPICC`, `MPICXX`, and `MPIFC` in `makefile`. Check if those are installed by console commands `mpiicx -v`, `mpiicpx -v`, and `mpiifort -v`. If not installed, use the default compiler by changing the makefile as `MPICC= mpiicc -cc=icx`, `MPICXX= mpiicpc -cxx=icpx`, and `MPIFC= mpiifort -fc=ifx`.
-- DFT-D4 and simple-DFT-D3 uses `meson` build system, which may be incompatible with intel's `ifx -flto`. (Should be fixed for `meson` version 1.9.0 and above.)
-    - We recommend to create a new python environment (conda, etc.) and install `meson` with `conda install meson`. `meson -v` should print version 1.9.0 or above. Proceed the build procedure as usual.
+- Currently, using link time optimization is not possible (at least for LLVM toolchains), as fortran's declaration is not enough to determine its type.
 - ELPA with intel toolchain may produce executable stack, which may connect to code injection. (`LDFLAGS=-Wl,-z,noexecstack` should fix the security issue, but might break something.)
 - libbeef version is not fixed, as it does not have tag.
 - pspfft version is not fixed, as it does not have tag.
